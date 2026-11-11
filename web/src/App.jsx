@@ -4,6 +4,7 @@ import ListPage from "./pages/ListPage.jsx";
 import DetailPage from "./pages/DetailPage.jsx";
 import ItemFormPage from "./pages/ItemFormPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import MyPage from "./pages/MyPage.jsx";
 import { useAuth } from "./lib/auth.jsx";
 
 function RequireAuth({ children }) {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/items/:id" element={<DetailPage />} />
         <Route path="/new" element={<RequireAuth><ItemFormPage /></RequireAuth>} />
         <Route path="/items/:id/edit" element={<RequireAuth><ItemFormPage /></RequireAuth>} />
+        <Route path="/me" element={<RequireAuth><MyPage /></RequireAuth>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<p className="muted center">페이지를 찾을 수 없어요.</p>} />
       </Route>

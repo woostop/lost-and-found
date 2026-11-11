@@ -21,7 +21,12 @@ export default function Layout() {
           <nav className="nav">
             {user ? (
               <>
-                <span className="muted nickname">{profile?.nickname ?? ""}님</span>
+                <Link to="/me" className="my-link">
+                  <span className="my-avatar" aria-hidden="true">
+                    {(profile?.nickname || user.email).slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="nickname">내 정보</span>
+                </Link>
                 <button className="btn-text" onClick={logout}>로그아웃</button>
                 <Link to="/new" className="btn btn-primary btn-sm">글쓰기</Link>
               </>
