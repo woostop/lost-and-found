@@ -4,6 +4,7 @@ import { BUCKET, imageUrl, supabase } from "../lib/supabase.js";
 import { useAuth } from "../lib/auth.jsx";
 import { TYPE_LABEL, errorText, formatDate, timeAgo } from "../lib/constants.js";
 import AiSummary from "../components/AiSummary.jsx";
+import StaticMap from "../components/StaticMap.jsx";
 
 export default function DetailPage() {
   const { id } = useParams();
@@ -94,6 +95,8 @@ export default function DetailPage() {
             </div>
           )}
         </dl>
+
+        {item.lat != null && item.lng != null && <StaticMap lat={item.lat} lng={item.lng} label={item.title} />}
 
         {item.description && <p className="description">{item.description}</p>}
 

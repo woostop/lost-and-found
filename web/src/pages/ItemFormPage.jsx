@@ -5,6 +5,9 @@ import { useAuth } from "../lib/auth.jsx";
 import { CATEGORIES, TYPE_LABEL, errorText } from "../lib/constants.js";
 import { extOf, shrinkImage } from "../lib/image.js";
 import AiSummary from "../components/AiSummary.jsx";
+import LocationPicker from "../components/LocationPicker.jsx";
+import StaticMap from "../components/StaticMap.jsx";
+import { KAKAO_KEY } from "../lib/kakao.js";
 
 const EMPTY = {
   type: "lost",
@@ -12,6 +15,8 @@ const EMPTY = {
   description: "",
   category: "기타",
   location: "",
+  lat: null,
+  lng: null,
   occurred_at: new Date().toISOString().slice(0, 10),
 };
 
@@ -30,6 +35,7 @@ export default function ItemFormPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!!id);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   // 수정 모드: 기존 글 불러오기
   useEffect(() => {
@@ -52,6 +58,8 @@ export default function ItemFormPage() {
             description: data.description ?? "",
             category: data.category,
             location: data.location ?? "",
+            lat: data.lat,
+            lng: data.lng,
             occurred_at: data.occurred_at ?? "",
           });
           setAiSummary(data.ai_summary);
@@ -70,6 +78,21 @@ export default function ItemFormPage() {
 
   function set(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  // 지도에서 고른 위치 반영: 건물 이름이 있으면 "건물 (주소)", 없으면 주소
+  function applyLocation({ lat, lng, address, placeName }) {
+    setForm((f) => ({
+      ...f,
+      lat,
+      lng,
+      location: placeName ? `${placeName} (${address})` : address,
+    }));
+    setPickerOpen(false);
+  }
+
+  function clearLocation() {
+    setForm((f) => ({ ...f, lat: null, lng: null }));
   }
 
   async function runAi() {
@@ -216,10 +239,38 @@ export default function ItemFormPage() {
         </label>
       </div>
 
-      <label className="field">
+      <div className="field">
         <span>장소</span>
-        <input value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="예) 학생회관 2층" />
-      </label>
+        <div className="location-row">
+          <input
+            value={form.location}
+            onChange={(e) => set("location", e.target.value)}
+            placeholder="예) 학생회관 2층"
+            aria-label="장소"
+          />
+          {KAKAO_KEY && (
+            <button type="button" className="btn" onClick={() => setPickerOpen(true)}>
+              📍 지도에서 찾기
+            </button>
+          )}
+        </div>
+        {form.lat != null && (
+          <div className="location-preview">
+            <StaticMap lat={form.lat} lng={form.lng} label={form.title || form.location} />
+            <button type="button" className="btn-text small" onClick={clearLocation}>
+              지도 위치 빼기
+            </button>
+          </div>
+        )}
+        <em className="muted small">상세 위치(층, 호실 등)는 장소 칸에 덧붙여 적어도 돼요</em>
+      </div>
+      {pickerOpen && (
+        <LocationPicker
+          value={form.lat != null ? { lat: form.lat, lng: form.lng, address: form.location } : null}
+          onConfirm={applyLocation}
+          onClose={() => setPickerOpen(false)}
+        />
+      )}
 
       <label className="field">
         <span>사진 <em className="muted">(선택, 1장)</em></span>
