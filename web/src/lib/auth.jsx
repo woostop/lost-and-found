@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 
-const AuthContext = createContext({ user: null, profile: null, loading: true });
+const AuthContext = createContext({ user: null, profile: null, loading: true, setProfile: () => {} });
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -32,7 +32,10 @@ export function AuthProvider({ children }) {
       .then(({ data }) => setProfile(data));
   }, [user]);
 
-  return <AuthContext.Provider value={{ user, profile, loading }}>{children}</AuthContext.Provider>;
+  // 내 정보 페이지에서 닉네임을 바꾼 뒤 헤더에도 바로 반영되게
+  return (
+    <AuthContext.Provider value={{ user, profile, loading, setProfile }}>{children}</AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
