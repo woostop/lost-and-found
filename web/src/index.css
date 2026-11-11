@@ -141,7 +141,7 @@ body::before {
   inset: 0;
   z-index: -1;
   background: url("/map-bg.svg") center / cover no-repeat;
-  opacity: .9;
+  opacity: .7;
   pointer-events: none;
 }
 body { background: transparent; }
