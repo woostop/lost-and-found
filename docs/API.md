@@ -52,6 +52,8 @@ REST로 직접 부를 때는 모든 요청에 `apikey: <publishable key>` 헤더
 | `description` | text | `''` | |
 | `category` | text | `기타` | `전자기기` `지갑` `가방` `의류` `신분증/카드` `열쇠` `액세서리` `기타` 중 하나 |
 | `location` | text | null | |
+| `lat` | double precision | null | 지도에서 고른 위치 위도. `lng`와 둘 다 있거나 둘 다 null |
+| `lng` | double precision | null | 지도에서 고른 위치 경도 |
 | `occurred_at` | date | null | 잃어버린/주운 날짜 `YYYY-MM-DD` |
 | `image_path` | text | null | Storage 경로 (`{user_id}/{파일명}`) |
 | `ai_summary` | jsonb | null | AI 정리 결과 (아래 형식) |
